@@ -231,7 +231,7 @@ module.exports.importWatsonLogs = (outputDir, filter, format) => {
           debug(`Watson logs got ${convos.length} convos`)
 
           try {
-            const filename = helpers.writeConvosExcel(botiumContext.compiler, convos, outputDir, botiumContext.workspace.name)
+            const filename = helpers.writeConvosExcel(botiumContext.compiler, convos, outputDir, process.env.BOTIUM_OUTPUT_FILE || botiumContext.workspace.name)
             console.log(`SUCCESS: wrote convos to file ${filename}`)
             filesWritten()
           } catch (err) {
