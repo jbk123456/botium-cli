@@ -105,7 +105,7 @@ const handler = (argv) => {
 	  //FIXME: pass this as parameter
 	let name = convo.sourceTag.filename.endsWith(".xlsx")?convo.sourceTag.filename:convo.header.name;
 	let url = process.env['SERVER_TESTS_URL'] + encodeURIComponent(name);
-	addContext(runner, {title: 'Name', value: " "+name});
+	addContext(runner, {title: 'Name', value: "\n"+name});
 	addContext(runner, url);
 
         addContext(runner, { title: 'Conversation Log', value: messageLog.join('\n') })
