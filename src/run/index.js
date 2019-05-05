@@ -102,6 +102,7 @@ const handler = (argv) => {
       driver.on('MESSAGE_RECEIVEDFROMBOT', listenerBot)
 
       const finish = (err) => {
+	addContext(runner, SERVER_TESTS_URL + convo.header.name);
         addContext(runner, { title: 'Conversation Log', value: messageLog.join('\n') })
         driver.eventEmitter.removeListener('MESSAGE_SENTTOBOT', listenerMe)
         driver.eventEmitter.removeListener('MESSAGE_RECEIVEDFROMBOT', listenerBot)
