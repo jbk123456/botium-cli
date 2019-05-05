@@ -102,7 +102,12 @@ const handler = (argv) => {
       driver.on('MESSAGE_RECEIVEDFROMBOT', listenerBot)
 
       const finish = (err) => {
-	addContext(runner, SERVER_TESTS_URL + convo.header.name);
+	  //FIXME: pass this as parameter
+	let name = convo.sourceTag.filename.endsWith(".xlsx")?convo.sourceTag.filename:convo.header.name;
+	let url = process.env['SERVER_TESTS_URL'] + encodeURIComponent(name);
+	addContext(runner, {title: 'Name', value: " "+name});
+	addContext(runner, url);
+
         addContext(runner, { title: 'Conversation Log', value: messageLog.join('\n') })
         driver.eventEmitter.removeListener('MESSAGE_SENTTOBOT', listenerMe)
         driver.eventEmitter.removeListener('MESSAGE_RECEIVEDFROMBOT', listenerBot)
