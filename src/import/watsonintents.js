@@ -222,16 +222,30 @@ module.exports.importWatsonLogs = (outputDir, filter, format) => {
             if (log.request.input && log.request.input.text) {
               convo.conversation.push({ sender: 'me', messageText: log.request.input.text, timestamp: log.request_timestamp })
             }
-            if (log.response.output && log.response.output.text) {
-              log.response.output.text.forEach((messageText) => {
-                if (messageText) convo.conversation.push({ sender: 'bot', messageText, timestamp: log.response_timestamp })
-              })
+
+            if (log.response.output) {
+		log.response.output.generic.forEach((g) => {
+		    var messageText = g.text;
+		    var buttons = g.options && g.options.map(function (g) {
+			return  {
+			  text: g.label,
+			  payload: g.value && g.value.input && g.value.input.text};
+		     
+		    });
+
+		    if (messageText) {
+			convo.conversation.push({ sender: 'bot', messageText, timestamp: log.response_timestamp });
+		    } else if (buttons) {
+			var messageText = 'OPTIONS ' + buttons.map(b => b.text).join('|');
+			convo.conversation.push({ sender: 'bot', messageText, timestamp: log.response_timestamp });
+		    }
+               });
             }
           })
           debug(`Watson logs got ${convos.length} convos`)
 
           try {
-            const filename = helpers.writeConvosExcel(botiumContext.compiler, convos, outputDir, botiumContext.workspace.name)
+            const filename = helpers.writeConvosExcel(botiumContext.compiler, convos, outputDir, process.env.BOTIUM_OUTPUT_FILE || botiumContext.workspace.name)
             console.log(`SUCCESS: wrote convos to file ${filename}`)
             filesWritten()
           } catch (err) {
